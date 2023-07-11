@@ -23,7 +23,7 @@ export const simpleProducts: Product[] = [
         price: 2000,
         countInStock: 200,
         discription: 'hight quentitys',
-        rating: 4,
+        rating: 3.5,
         numberRewiews: 72,
 
     },
