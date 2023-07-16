@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import productRouter from "./routers/ProductRouter";
 import seedRouter from "./routers/SeedRouter";
+import { userRouter } from "./routers/UserRouter";
 dotenv.config();
 
 const MONGODB_URL = process.env.MONGODB_URL || "mongodb://localhost/tsamazona";
@@ -14,8 +15,8 @@ mongoose
   .then(() => {
     console.log("connect");
   })
-  .catch(() => {
-    console.log("disconnect");
+  .catch((err) => {
+    console.log("disconnect", err );
   });
 
 const app = express();
@@ -26,7 +27,11 @@ app.use(
   })
 );
 
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+
 app.use("/api/products", productRouter);
+app.use("/api/users", userRouter);
 app.use("/api/seed", seedRouter);
 
 const PORT = 4000;
