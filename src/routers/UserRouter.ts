@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
-import { UserModal } from "../models/UserModel";
+import { User, UserModal } from "../models/UserModel";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils";
 
@@ -26,3 +26,22 @@ userRouter.post(
     res.status(401).json({ massage: "Invalid email or password" });
   })
 );
+
+userRouter.post(
+  '/signup',
+  asyncHandler(async (req: Request, res: Response)=>{
+    const user = await UserModal.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: bcrypt.hashSync(req.body.password),
+
+    } as User)
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      token: generateToken(user)
+    })
+  })
+)

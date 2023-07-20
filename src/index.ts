@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import productRouter from "./routers/ProductRouter";
 import seedRouter from "./routers/SeedRouter";
 import { userRouter } from "./routers/UserRouter";
+import { orderRouter } from "./routers/OrderRouter";
 dotenv.config();
 
 const MONGODB_URL = process.env.MONGODB_URL || "mongodb://localhost/tsamazona";
@@ -32,6 +33,7 @@ app.use(express.urlencoded({extended: true}))
 
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);
+app.use("/api/orders", orderRouter);
 app.use("/api/seed", seedRouter);
 
 const PORT = 4000;
