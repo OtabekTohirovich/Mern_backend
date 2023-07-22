@@ -6,6 +6,28 @@ import { Product } from "../models/ProdoctModel";
 
 export const orderRouter = express.Router();
 
+orderRouter.get(
+  '/mine',
+  isAuth,
+  asyncHandler(async (req: Request, res: Response)=>{
+    const orders = await OrderModel.find({user: req.user._id})
+    res.json(orders)
+  })
+)
+
+orderRouter.get(
+  "/id/:id",
+  isAuth,
+  asyncHandler(async (req: Request, res: Response)=>{
+    const order = await OrderModel.findById(req.params.id)
+    if (order) {
+      res.json(order)
+    } else {
+      res.status(404).json({massage: 'Order Not Found'})
+    }
+  })
+)
+
 orderRouter.post(
   "/",
   isAuth,
@@ -30,3 +52,26 @@ orderRouter.post(
     }
   })
 );
+
+orderRouter.put(
+  '/:id/pay',
+  isAuth,
+  asyncHandler(async (req: Request, res: Response) => {
+    const order = await OrderModel.findById(req.params.id).populate('user')
+
+    if (order) {
+      order.isPaid = true
+      order.paidAt = new Date(Date.now())
+      order.paymentResult = {
+        paymentId: req.body.id,
+        status: req.body.status,
+        update_time: req.body.update_time,
+        email_address: req.body.email_address,
+      }
+      const updatedOrder = await order.save()
+      res.send({order: updatedOrder, massage:'Order Paid Successfully'})
+    } else {
+      res.status(404).json({massage: 'Order Not Found'})
+    }
+  })
+)
